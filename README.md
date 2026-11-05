@@ -36,3 +36,11 @@ brpc 用 `-std=gnu++11`（不定义 `__STRICT_ANSI__`）却**手动加了 `-D__S
     [2] brpc RPC: OK (5 次同步调用全部正确)
 
 产物：`libbrpc.a`(389MB) 与 `libbrpc.so`。
+
+## 更新（2026-11-04）
+
+- **补打 Doris 私有补丁** `thirdparty/patches/brpc-1.4.0-write-background.patch`（补 `StreamWriteOptions`）。
+  官方 `build-thirdparty.sh` 会打它，手工编 brpc 时容易漏，BE 链接期会报未定义符号。
+- 最终 `doris_be` 使用本仓库的 `libbrpc.a`，BRPC server 在启动验证中正常监听并通过 `/status` 返回 200。
+- 8 处 loongarch 补丁（含 bthread 上下文切换汇编）与 `-include cstdint` 全部保留，全量编译 0 错误。
+- 链接行仍须同时给 `-L.../lib`（openssl）与 `-L.../lib64`（brpc 自身）。
